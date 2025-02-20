@@ -1,0 +1,13 @@
+# Use the official PHP image from the Docker Hub
+FROM php:7.4-apache
+
+# Copy the PHP files to the working directory in the container
+COPY . /var/www/html/
+
+RUN chmod -R 777 /var/www/html/cache
+
+# Expose port 80 to be able to access the web app
+EXPOSE 80
+
+# Start the Apache server
+CMD ["apache2-foreground"]

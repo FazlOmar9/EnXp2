@@ -1,0 +1,22 @@
+# Use a lightweight base image
+FROM ubuntu:latest
+
+# Install necessary tools including GCC and socat
+RUN apt-get update && apt-get install -y \
+    socat \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the challenge source code into the container
+COPY . /home/ctf/
+
+# Compile the challenge binary and delete the source file
+# RUN gcc -no-pie -o /home/ctf/chall1 /home/ctf/chall1.c -fno-stack-protector /home/ctf/assem.o
+
+# Set proper permissions for the binary
+RUN chmod +x /home/ctf/chall1
+
+# Expose the port that players will connect to
+EXPOSE 1337
+
+# Entry point: Modified socat with proper stream handling
+CMD socat TCP-LISTEN:1337,reuseaddr,fork SYSTEM:"stdbuf -i0 -o0 -e0 /home/ctf/chall1",pty,stderr,setsid,sigint,sane,raw,echo=0

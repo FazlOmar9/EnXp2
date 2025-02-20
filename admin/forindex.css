@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f0f0f0;
+}
+
+.navbar {
+    margin-bottom: 20px;
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.navbar-brand {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.navbar-nav {
+    margin-left: 20px;
+}
+
+.nav-link {
+    color: #fff;
+    margin-right: 20px;
+}
+
+.nav-link:hover {
+    color: #ccc;
+}
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #444;
+}
+.admin-text {
+    color: #000; 
+}

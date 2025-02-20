@@ -1,0 +1,61 @@
+# Use an official PHP image as the base
+FROM php:8.2-apache
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    mariadb-server \
+    mariadb-client \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    unzip \
+    git \
+    curl \
+    vim \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
+RUN docker-php-ext-install mysqli pdo pdo_mysql zip
+
+# Enable Apache modules
+RUN a2enmod rewrite
+
+# Configure Apache
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
+# Create a test PHP file
+RUN echo "<?php phpinfo(); ?>" > /var/www/html/test.php
+
+# Copy application files
+COPY . /var/www/html/
+
+# Set proper permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
+# Copy SQL scripts to a specific directory in the container
+RUN mkdir -p /sql
+COPY galaxy.sql /sql/script1.sql
+COPY item.sql /sql/script2.sql
+COPY void.sql /sql/script3.sql
+
+# Configure MariaDB
+RUN mkdir -p /var/run/mysqld /var/lib/mysql \
+    && chown -R mysql:mysql /var/run/mysqld /var/lib/mysql \
+    && chmod 777 /var/run/mysqld \
+    && chmod 755 /var/lib/mysql
+
+# Initialize MariaDB data directory
+RUN mysql_install_db --user=mysql --datadir=/var/lib/mysql
+
+# Copy and set permissions for the start script
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# Expose the default Apache port
+EXPOSE 80
+
+# Set the default command to start both MariaDB and Apache
+CMD ["/usr/local/bin/start.sh"]
